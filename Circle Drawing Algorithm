@@ -1,0 +1,64 @@
+#include <windows.h>
+#include <GL/glut.h>
+#include <math.h>
+
+// Function to draw a filled circle using GL_TRIANGLE_FAN
+void drawCircle(float cx, float cy, float radius, int num_segments, float r, float g, float b) {
+    glColor3f(r, g, b); // Set color
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(cx, cy); // Center point
+    for (int i = 0; i <= num_segments; i++) {
+        float angle = 2.0f * 3.1416f * i / num_segments;
+        float x = radius * cos(angle);
+        float y = radius * sin(angle);
+        glVertex2f(cx + x, cy + y);
+    }
+    glEnd();
+}
+
+// Function to draw the smile using line segments
+void drawSmile(float cx, float cy, float radius) {
+    glColor3f(0, 0, 0); // Black color for the smile
+    glLineWidth(3.0); // Set line thickness
+    glBegin(GL_LINE_STRIP);
+    for (int i = 30; i <= 150; i++) { // Create a curved arc
+        float angle = 3.1416f * i / 180.0f;
+        float x = radius * cos(angle);
+        float y = radius * sin(angle);
+        glVertex2f(cx + x, cy + y);
+    }
+    glEnd();
+}
+
+void Draw() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Cloud Color
+    float cloudR = 0.6f, cloudG = 0.8f, cloudB = 1.0f;
+
+    // Draw the oval-shaped cloud using 7 overlapping circles
+    drawCircle(0.5f, 0.5f, 0.25f, 50, cloudR, cloudG, cloudB); // Main central body
+    drawCircle(0.35f, 0.55f, 0.18f, 50, cloudR, cloudG, cloudB); // Left Top
+    drawCircle(0.65f, 0.55f, 0.18f, 50, cloudR, cloudG, cloudB); // Right Top
+    drawCircle(0.25f, 0.45f, 0.15f, 50, cloudR, cloudG, cloudB); // Far Left
+    drawCircle(0.75f, 0.45f, 0.15f, 50, cloudR, cloudG, cloudB); // Far Right
+    drawCircle(0.4f, 0.35f, 0.12f, 50, cloudR, cloudG, cloudB); // Bottom Left
+    drawCircle(0.6f, 0.35f, 0.12f, 50, cloudR, cloudG, cloudB); // Bottom Right
+
+    // Draw the face features
+    drawCircle(0.45f, 0.5f, 0.04f, 30, 0.5f, 0.5f, 0.5); // Left eye (black)
+    drawCircle(0.65f, 0.5f, 0.04f, 30, 0.5f, 0.5f, 0.5); // Right eye (black)
+    drawCircle(0.4f, 0.42f, 0.03f, 30, 1.0f, 0.6f, 0.6f); // Left cheek (pink)
+    drawCircle(0.7f, 0.42f, 0.03f, 30, 1.0f, 0.6f, 0.6f); // Right cheek (pink)
+
+    // Draw the smile
+    drawSmile(0.55f, 0.34f, 0.1f);
+    glutSwapBuffers();
+}
+
+void init() {
+    glClearColor(1.0, 1.0, 1.0, 1.0); // White background
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+}
